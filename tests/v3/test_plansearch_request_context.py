@@ -242,7 +242,7 @@ def test_cancelling_one_parent_leaves_the_other_running(relay):
         try:
             results[tag] = _stage().generate("sum the file", f"t-{tag}", llm,
                                              num_plans=3, base_seed=base_seed)
-        except Exception as exc:  # noqa: BLE001 — recorded, asserted below
+        except Exception as exc:  # recorded, asserted below
             results[tag] = exc
 
     tb = threading.Thread(target=run, args=("B", llm_b, 5000))

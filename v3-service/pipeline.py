@@ -1030,9 +1030,9 @@ def _make_self_test(code: str, tc, task_input_file: str = ""):
     if name and _entry_takes_case_input(code, name):
         return (code + "\nimport ast as _a\n"
             + f"_i={repr(inp)}\n_e={repr(exp)}\n"
-            + "try:\n _p=_a.literal_eval(_i)\nexcept:\n _p=_i\n"  # noqa: E722  -- bare except inside generated user code, intentional
+            + "try:\n _p=_a.literal_eval(_i)\nexcept:\n _p=_i\n"  # bare except inside generated user code, intentional
             + f"_r={name}(*_p) if isinstance(_p,tuple) else {name}(_p) if isinstance(_p,list) else {name}(_p)\n"
-            + "try:\n _ev=_a.literal_eval(_e)\nexcept:\n _ev=_e\n"  # noqa: E722  -- bare except inside generated user code, intentional
+            + "try:\n _ev=_a.literal_eval(_e)\nexcept:\n _ev=_e\n"  # bare except inside generated user code, intentional
             + "assert str(_r)==str(_ev) or _r==_ev,f'got {_r}'\nprint('SELF_TEST_PASS')\n"), {}
     # A program that reads a named file has to be given that file. Feeding it
     # stdin instead tests a contract the task never stated, and the verdict

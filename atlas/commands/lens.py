@@ -682,7 +682,7 @@ def _write_bundle_fingerprint(staging_dir: str, model, embed=None,
 
         write_fingerprint(staging_dir, score, note="written by atlas lens build")
         return None
-    except Exception as exc:  # noqa: BLE001 — a missing fingerprint is the old behaviour
+    except Exception as exc:  # a missing fingerprint is the old behaviour
         return (f"drift fingerprint not written ({exc}); the lens drift check "
                 f"enforces nothing for this bundle")
     finally:
@@ -1028,7 +1028,7 @@ def _emit_build(args: argparse.Namespace, color: bool) -> int:
                 observe_embedding_convention,
             )
             embedding_contract = observe_embedding_convention()
-        except Exception as exc:  # noqa: BLE001 — telemetry, not correctness
+        except Exception as exc:  # telemetry, not correctness
             _safe_print(f"  could not observe the embedding convention "
                         f"({exc}); artifacts will declare none")
         save_model_identity(

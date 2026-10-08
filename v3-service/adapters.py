@@ -606,7 +606,7 @@ def _abort_connection(conn) -> bool:
         pass
     try:
         conn.close()
-    except Exception:  # noqa: BLE001 - a close that fails is still cancelled
+    except Exception:  # a close that fails is still cancelled
         pass
     return did_shutdown
 
