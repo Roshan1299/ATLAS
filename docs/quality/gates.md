@@ -120,6 +120,7 @@ job on this list that does not start gives no red:
 |---|---|
 | `checks ran` | Fails when a workflow did not start, a job with no condition was skipped or cancelled, or a required check was skipped |
 | `replay (proxy)` | The proxy, built from the change, does on each recorded session what the recording says. Runs when `proxy/` or `tests/replay/` changed, and in the merge queue |
+| `smoke result` | For a pull request that changes text that every request to the model carries: red until the text of the pull request has the result line of a smoke run that was made with that text. See [below](#a-change-to-text-that-the-model-reads) |
 | `fix tests (fail without the fix)` | For a pull request with the type `fix`: runs the tests it adds or changes on the base's code and on the pull request, and names each test that passes without the fix |
 | `integrity check` | Reads the change for weakened checks: removed or skipped tests, new suppressions, changes to the files that configure checks, new documents |
 | `zizmor (workflows)`, `actionlint (workflows)` | The workflow files themselves: security mistakes and mistakes GitHub shows only at run time. A finding fails the job |
@@ -454,6 +455,72 @@ the replays, and a session whose command changes a file that the proxy reads
 later cannot be recorded; the recording step refuses it. The way to lift
 this: the recording keeps, for each call to the sandbox, the files that call
 changed, and the stand-in puts them into the workspace at a replay.
+
+## A change to text that the model reads
+
+The replay job compares each request that the proxy sends with a recorded
+one, in full. So a change to a prompt, a tool description, the grammar or
+the schema turns `replay (proxy)` red until the recordings are made again,
+and a changed recording marks such a pull request. Two things follow:
+
+- **Text that every request carries** (the system prompt with the tool
+  descriptions, the grammar, the schema of the reply): the job
+  `smoke result` is red until the text of the pull request has the result
+  line of a smoke run that was made with that text. The job sees such a
+  change from the recordings themselves: the part has other values than
+  on the base, and none that the base's recordings had. A part that no
+  request carries any more counts, and so does a part that is new in every
+  request.
+- **Any other text** (a note, a refusal or a steer that the proxy writes in
+  one situation): the pull request adds or changes a recording that shows
+  the text in its situation. The recording is the proof, and no smoke run is
+  asked for.
+
+The smoke run is three fixed tasks of the driver, once each, with a real
+model. A maintainer starts it by hand, after reading the diff; nothing on
+GitHub starts it. Its one result line goes into the text of the pull
+request as it is:
+
+`Smoke run on <commit>: 3 of 3 sessions with no harness defect, <seconds> s; the changed text is part of every request (text <mark>).`
+
+The mark is made from the text that every request carries
+(`scripts/smoke_result.py --mark <commit>` prints it). So the line holds
+while the head of the pull request has that same text: also after a rebase,
+and after a later commit that leaves the text as it is.
+
+What the result says, and what it does not say:
+
+- The smoke result says that a session still runs with the new text: it
+  starts, the model's replies are read, the tool calls run, it ends. It is a
+  yes or a no, with the seconds. It is not a score.
+- A pass does not show that the model behaves as well as before. A claim
+  about behaviour needs a measurement of its own: two builds, enough
+  sessions, the affected sessions shown from the diff, and the rule written
+  down before the run.
+- The three tasks are fixed and are the driver's own. They are never taken
+  from held-out data, and no product text names them.
+- No text is changed to make the smoke pass. After two red smoke runs the
+  change stops and is thought over.
+- When the server is not available, the pull request says so in one line.
+  The change is then not tried with a real model before it merges; the
+  first nightly run after the server is back covers it. The replay tests
+  are no check of such a change: its recordings are written again from the
+  new text, so they pass. The line, with the mark of the text:
+  `No smoke run: the server is not available. Not tried with a real model; the first nightly run after the server is back covers this text (text <mark>).`
+
+The limits of the job:
+
+- It cannot know that a run took place. It holds that the line is there,
+  that it says 3 of 3, and that it is for the text of this head.
+- It is not a required check. A red `smoke result` is for the maintainer
+  who merges.
+- Anybody who can edit the text of the pull request can write either line.
+  A maintainer reads the text before the merge. If the job is ever made a
+  required check, the line for a server that is not available needs a sign
+  that only a maintainer can give.
+- v3-service builds prompts of its own, and no recording looks inside it.
+  For a change to one of them no smoke run is asked for: nothing can show
+  today that the three tasks send the changed text.
 
 ## Tests that the plain jobs leave out
 
