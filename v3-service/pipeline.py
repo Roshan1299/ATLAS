@@ -320,7 +320,7 @@ class _PoolCapture:
                         record=result.get("evidence_record"), phase="delivered")
             self._write_selection(result)
             self._write_reconciliation(result)
-        except Exception as exc:                       # noqa: BLE001
+        except Exception as exc:
             self.write_error = self.write_error or f"close: {exc}"
         self._write_status()
         fd, self._fd = self._fd, None
@@ -1478,7 +1478,7 @@ class V3PipelineService:
             print(f"  [telemetry] pipeline summary write failed (non-fatal): {e}",
                   flush=True)
 
-    def _run_impl(self, problem: str, task_id: str = "cli",
+    def _run_impl(self, problem: str, task_id: str = "cli",  # noqa: C901
                   progress_callback=None, files: Dict[str, str] = None,
                   file_path: str = "", build_command: str = "",
                   working_dir: str = "/workspace", baseline_code: str = "",
@@ -1673,7 +1673,7 @@ class V3PipelineService:
                 sandbox, baseline_code, file_path, working_dir,
                 remaining_ms=lambda: _remaining_budget_ms(start, budget_ms), check_cancel=check_client)
 
-        def verified_sandbox(code, extra_test=""):
+        def verified_sandbox(code, extra_test=""):  # noqa: C901
             """Sandbox + verification. Algorithmic tasks: execution, with the
             I/O self-tests recorded as diagnostics; interactive: compile smoke.
 

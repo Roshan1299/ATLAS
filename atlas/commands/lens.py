@@ -112,7 +112,7 @@ def _inspect_cost_field(artifact_dir: str) -> ArtifactInspection:
             try:
                 return ArtifactInspection(present=True,
                                           dim=int(state[key].shape[1]))
-            except Exception:
+            except Exception:  # noqa: S112
                 continue
     return ArtifactInspection(present=True, dim=None,
                               error="no recognized first-layer weight key")
@@ -467,7 +467,7 @@ def _embed_text(llama_url: str, text: str,
             pa + pb)
 
 
-def _extract_training_embeddings(samples: List[Dict],
+def _extract_training_embeddings(samples: List[Dict],  # noqa: C901
                                   llama_url: str,
                                   color: bool,
                                   cache_path: Optional[str] = None,
@@ -764,7 +764,7 @@ def _load_results_samples(results_dir: str) -> List[Dict]:
     return samples
 
 
-def _emit_build(args: argparse.Namespace, color: bool) -> int:
+def _emit_build(args: argparse.Namespace, color: bool) -> int:  # noqa: C901
     """Train fresh Lens artifacts for the model llama-server has loaded.
 
     Doesn't ship its own dataset — users point --samples at a labeled
@@ -1223,7 +1223,7 @@ once the PR merges.
 """
 
 
-def _emit_publish(args: argparse.Namespace, color: bool) -> int:
+def _emit_publish(args: argparse.Namespace, color: bool) -> int:  # noqa: C901
     """Upload local artifacts to HF + generate a registry-add PR body.
 
     Pipeline (matches PC-059 issue spec):
@@ -1421,7 +1421,7 @@ def _emit_publish(args: argparse.Namespace, color: bool) -> int:
     try:
         from atlas.commands.tier import classify, probe
         entry_tier = classify(probe()).tier
-    except Exception:
+    except Exception:  # noqa: S110
         # Host tier detection is optional publishing metadata; medium is the
         # conservative registry fallback when hardware probing is unavailable.
         pass
@@ -1433,7 +1433,7 @@ def _emit_publish(args: argparse.Namespace, color: bool) -> int:
                 else os.path.join(atlas_root, cli_env.MODEL_DIR))
         size_gb = round(os.path.getsize(
             os.path.join(base, model_file)) / (1024 ** 3), 1)
-    except Exception:
+    except Exception:  # noqa: S110
         # Model size enriches the registry entry but is not required to
         # publish a verified artifact bundle.
         pass

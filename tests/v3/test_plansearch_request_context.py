@@ -27,8 +27,8 @@ V3 = os.path.join(os.path.dirname(__file__), "..", "..", "v3-service")
 if V3 not in sys.path:
     sys.path.insert(0, V3)
 
-import adapters  # noqa: E402
-from stages.plan_search import (  # noqa: E402
+import adapters
+from stages.plan_search import (
     PlanSearch, PlanSearchConfig, PlanSearchInfrastructureError)
 
 

@@ -675,7 +675,7 @@ class PlanSearch:
             for fut, idx in futures.items():
                 try:
                     results.append((idx, fut.result()))
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     _record(idx, exc)
         _raise_if_infrastructure(infra)
         # Ordered by index so seeds, plans and candidates stay aligned with
