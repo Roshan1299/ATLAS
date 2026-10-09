@@ -11,7 +11,7 @@ ruff ran Pyflakes only, and not on `scripts/`. Its settings are now in
 bare `except` and an `except` that only passes or continues (E722, S110,
 S112), a function with a complexity over 15 (C901), and a `# noqa` that no
 finding uses (RUF100).
-- The 172 markers that no finding used are removed, 147 of them
+- The 180 markers that no finding used are removed, 155 of them
   `# noqa: E402` for a rule that is not on.
 - The 65 findings that were there carry a marker for their rule: 37 C901, 25
   S110, 3 S112. Repairing one leaves its marker unused, and RUF100 then asks
